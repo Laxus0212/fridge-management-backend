@@ -1,0 +1,37 @@
+components:
+  schemas:
+    Recipe:
+      type: object
+      properties:
+        recipeId:
+          type: integer
+        recipeName:
+          type: string
+        mealType:
+          type: string
+          enum:
+            - reggeli
+            - ebéd
+            - vacsora
+        saved_by:
+          type: integer
+        sharedWithFamily:
+          type: boolean
+        ingredients:
+            type: array
+            items:
+              $ref: '#/components/schemas/Ingredient'
+
+    Ingredient:
+      type: object
+      properties:
+        ingredientId:
+          type: integer
+        ingredient_name:
+          type: string
+        quantity:
+          type: number
+        unit:
+          type: string
+        recipeId:
+          type: integer

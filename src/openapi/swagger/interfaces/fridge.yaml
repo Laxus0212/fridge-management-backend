@@ -1,0 +1,21 @@
+components:
+  schemas:
+    Fridge:
+      type: object
+      properties:
+        fridgeId:
+          type: integer
+        fridgeName:
+          type: string
+        ownerId:
+          type: integer
+        sharedWithFamily:
+          type: boolean
+      required: [fridgeName]
+    UpdateFridgeNameRequest:
+      type: object
+      properties:
+        fridgeName:
+          type: string
+      required: [fridgeName]
+

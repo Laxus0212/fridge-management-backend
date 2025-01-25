@@ -1,0 +1,17 @@
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        messageId:
+          type: string
+        chatId:
+          type: integer
+        senderId:
+          type: integer
+        message:
+          type: string
+        sentAt:
+          type: string
+          format: date-time
+      required: [chatId, message]

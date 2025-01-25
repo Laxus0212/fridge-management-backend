@@ -1,0 +1,46 @@
+components:
+  schemas:
+    Family:
+      type: object
+      properties:
+        familyId:
+          type: integer
+          format: int32
+          description: The unique identifier for the family.
+        familyName:
+          type: string
+          maxLength: 100
+          description: The name of the family.
+        invitationCode:
+          type: string
+          maxLength: 50
+          description: The unique invitation code for the family.
+      required:
+        - familyId
+        - familyName
+        - invitationCode
+    CreateFamilyReq:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Family Name"
+          required:
+            - name
+
+    Invite:
+      type: object
+      properties:
+        inviteId:
+          type: integer
+        familyId:
+          type: integer
+        familyName:
+          type: string
+        inviter_email:
+          type: string
+      required:
+        - inviteId
+        - familyId
+        - familyName
+        - inviter_email

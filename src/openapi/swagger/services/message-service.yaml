@@ -1,0 +1,139 @@
+paths:
+  /messages:
+    post:
+      tags:
+        - Message
+      summary: Send a message
+      operationId: sendMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../interfaces/message.yaml#/components/schemas/Message'
+      responses:
+        '201':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/message.yaml#/components/schemas/Message'
+              examples:
+                example1:
+                  value:
+                    messageId: asldnfln234234asdnkls23
+                    chatId: 1
+                    senderId: 1
+                    message: "Hello, family!"
+                    sentAt: "2023-11-01T10:00:00Z"
+
+  /chats/{chatId}/messages:
+    get:
+      tags:
+        - Message
+      summary: Get all messages for a chat
+      operationId: getMessagesForChat
+      parameters:
+        - name: chatId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../interfaces/message.yaml#/components/schemas/Message'
+              examples:
+                example1:
+                  value:
+                    - messageId: alskfnlak2314j14jkafs2
+                      chatId: 1
+                      senderId: 1
+                      message: "Hello, family!"
+                      sentAt: "2023-11-01T10:00:00Z"
+                    - messageId: 2
+                      chatId: 1
+                      senderId: 2
+                      message: "Hi there!"
+                      sentAt: "2023-11-01T10:05:00Z"
+
+  /messages/{messageId}:
+    get:
+      tags:
+        - Message
+      summary: Get a specific message
+      operationId: getMessage
+      parameters:
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Message details
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/message.yaml#/components/schemas/Message'
+              examples:
+                example1:
+                  value:
+                    messageId: akjsdfhg234z98234sd
+                    chatId: 1
+                    senderId: 1
+                    message: "Hello, family!"
+                    sentAt: "2023-11-01T10:00:00Z"
+
+    put:
+      tags:
+        - Message
+      summary: Update a message
+      operationId: updateMessage
+      parameters:
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../interfaces/message.yaml#/components/schemas/Message'
+      responses:
+        '200':
+          description: Message updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/message.yaml#/components/schemas/Message'
+              examples:
+                example1:
+                  value:
+                    messageId: agdsjf2u34z234
+                    chatId: 1
+                    senderId: 1
+                    message: "Updated message"
+                    sentAt: "2023-11-01T10:00:00Z"
+
+    delete:
+      tags:
+        - Message
+      summary: Delete a message
+      operationId: deleteMessage
+      parameters:
+        - name: messageId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Message deleted successfully

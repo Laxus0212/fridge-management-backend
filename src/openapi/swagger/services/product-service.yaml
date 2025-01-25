@@ -1,0 +1,154 @@
+paths:
+  /products:
+    post:
+      tags:
+        - Product
+      summary: Add a new product to a shelf
+      operationId: addProduct
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../interfaces/product.yaml#/components/schemas/Product'
+      responses:
+        '201':
+          description: Product added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/product.yaml#/components/schemas/Product'
+              examples:
+                example1:
+                  value:
+                    productId: 1
+                    productName: "Milk"
+                    quantity: 1.0
+                    unit: "l"
+                    expirationDate: "2023-12-01"
+                    shelfId: 1
+
+  /products/{productId}:
+    get:
+      tags:
+        - Product
+      summary: Get product by ID
+      operationId: getProductById
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/product.yaml#/components/schemas/Product'
+              examples:
+                example1:
+                  value:
+                    productId: 1
+                    productName: "Milk"
+                    quantity: 1.0
+                    unit: "l"
+                    expirationDate: "2023-12-01"
+                    shelfId: 1
+    put:
+      tags:
+        - Product
+      summary: Update product
+      operationId: updateProduct
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../interfaces/product.yaml#/components/schemas/Product'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/product.yaml#/components/schemas/Product'
+              examples:
+                example1:
+                  value:
+                    productId: 1
+                    productName: "Updated Milk"
+                    quantity: 1.5
+                    unit: "l"
+                    expirationDate: "2023-12-15"
+                    shelfId: 1
+    delete:
+      tags:
+        - Product
+      summary: Delete product
+      operationId: deleteProduct
+      parameters:
+        - in: path
+          name: productId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '204':
+          description: Product deleted successfully
+
+  /shelves/{shelfId}/products:
+    get:
+      tags:
+        - Product
+      summary: Get items by shelf ID
+      operationId: getProductsByShelfId
+      parameters:
+        - in: path
+          name: shelfId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: List of items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../interfaces/product.yaml#/components/schemas/Product'
+              examples:
+                example1:
+                  value:
+                    - productId: 1
+                      productName: "Milk"
+                      quantity: 1
+                      unit: "l"
+                      expirationDate: "2023-12-01"
+                      shelfId: 1
+                    - productId: 2
+                      productName: "Eggs"
+                      quantity: 12
+                      unit: "pcs"
+                      expirationDate: "2023-12-10"
+                      shelfId: 1
+                    - productId: 1
+                      productName: "Carrots"
+                      quantity: 4
+                      unit: "pcs"
+                      expirationDate: "2023-12-01"
+                      shelfId: 2
+                    - productId: 2
+                      productName: "Eggs"
+                      quantity: 12
+                      unit: "pcs"
+                      expirationDate: "2023-12-10"
+                      shelfId: 2

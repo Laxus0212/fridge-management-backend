@@ -1,0 +1,36 @@
+components:
+  schemas:
+    ShoppingList:
+      type: object
+      properties:
+        listId:
+          type: integer
+        name:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ShoppingListItem'
+        familyId:
+          type: integer
+
+    ShoppingListItem:
+      type: object
+      properties:
+        itemId:
+          type: integer
+        listId:
+          type: integer
+        productName:
+          type: string
+        quantity:
+          type: number
+        unit:
+          enum:
+            - kg
+            - g
+            - l
+            - ml
+            - pcs
+            - dkg
+            - dl

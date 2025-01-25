@@ -1,0 +1,213 @@
+paths:
+  /users:
+    get:
+      tags:
+        - User
+      summary: List all users
+      operationId: getAllUsers
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../interfaces/user.yaml#/components/schemas/User'
+              examples:
+                example1:
+                  value:
+                    - userId: 1
+                      email: "user1@example.com"
+                      username: "user1"
+                    - userId: 2
+                      email: "user2@example.com"
+                      username: "user2"
+    post:
+      tags:
+        - User
+      summary: Register a new user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../interfaces/user.yaml#/components/schemas/User'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/user.yaml#/components/schemas/User'
+              examples:
+                example1:
+                  value:
+                    userId: 3
+                    email: "newuser@example.com"
+                    username: "newuser"
+
+  /users/login:
+    post:
+      tags:
+        - User
+      summary: "Login user"
+      description: "Log in with email and password, and return the user data if the credentials are valid."
+      operationId: loginUser
+      requestBody:
+        description: "Email and password for login"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../interfaces/user.yaml#/components/schemas/LoginUserReq"
+            example:
+              email: "example@gmail.com"
+              password: "password"
+      responses:
+        '200':
+          description: "User data returned on successful login"
+          content:
+            application/json:
+              schema:
+                $ref: "../interfaces/user.yaml#/components/schemas/LoginUserResp"
+              examples:
+                example1:
+                  value:
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                    user:
+                      userId: 1
+                      email: "exampleuser@teszt.hu"
+                      username: "exampleuser"
+                      password: "password"
+                      familyId: 1
+        '400':
+          description: "Invalid email or password"
+        '500':
+          description: "Server error"
+
+  /users/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get user by ID
+      operationId: getUserById
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/user.yaml#/components/schemas/User'
+              examples:
+                example1:
+                  value:
+                    userId: 1
+                    email: "exampleuser@teszt.hu"
+                    username: "exampleuser"
+                    password: "password"
+                    familyId: 1
+    put:
+      tags:
+        - User
+      summary: Update a user by ID
+      operationId: updateUserById
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../interfaces/user.yaml#/components/schemas/User'
+            example:
+              userId: 3
+              email: "newuser@example.com"
+              username: "newuser"
+              password: "password"
+              familyId: 1
+      responses:
+        '200':
+          description: User updated
+          content:
+            application/json:
+              schema:
+                $ref: '../interfaces/user.yaml#/components/schemas/User'
+              example:
+                userId: 3
+                email: "newuser@example.com"
+                username: "newuser"
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - User
+      summary: Delete a user
+      operationId: deleteUser
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      responses:
+        '204':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example1:
+                  value:
+                    message: "User deleted successfully"
+  /users/{userId}/fridges:
+    get:
+      tags:
+        - User
+      summary: Get fridges owned by user or shared within user's family
+      operationId: getUserFridges
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+          description: The ID of the user requesting the fridges
+      responses:
+        '200':
+          description: List of fridges accessible by the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '../interfaces/fridge.yaml#/components/schemas/Fridge'
+              examples:
+                example1:
+                  value:
+                    - fridgeId: 1
+                      fridgeName: "Fridge Shared With Family"
+                      ownerId: 2
+                      sharedWithFamily: true
+                    - fridgeId: 2
+                      fridgeName: "Fridge Owned By User"
+                      ownerId: 1
+                      sharedWithFamily: false
+                    - fridgeId: 3
+                      fridgeName: "Fridge Owned By User But Shared"
+                      ownerId: 1
+                      sharedWithFamily: true
+        '404':
+          description: User not found

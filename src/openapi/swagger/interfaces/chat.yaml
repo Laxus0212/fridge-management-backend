@@ -1,0 +1,14 @@
+components:
+  schemas:
+    Chat:
+      type: object
+      properties:
+        chatId:
+          type: integer
+        familyId:
+          type: integer
+        messages:
+            type: array
+            items:
+              $ref: '../interfaces/message.yaml#/components/schemas/Message'
+      required: [chatId, familyId]

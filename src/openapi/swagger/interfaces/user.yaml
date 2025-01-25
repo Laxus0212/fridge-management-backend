@@ -1,0 +1,66 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userId:
+          type: integer
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        familyId:
+          type: integer
+      required:
+        - email
+        - username
+        - password
+    LoginUserReq:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+      required:
+        - email
+        - password
+    LoginUserResp:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT token for authentication
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        user:
+          $ref: "#/components/schemas/User"
+    FamilyMember:
+      type: object
+      properties:
+        userId:
+          type: integer
+        username:
+          type: string
+        familyId:
+          type: integer
+      required:
+        - userId
+        - username
+        - familyId
+    GetUserResp:
+      type: object
+      properties:
+        userId:
+          type: integer
+        username:
+          type: string
+        familyId:
+          type: integer
+      required:
+        - userId
+        - username
+        - familyId

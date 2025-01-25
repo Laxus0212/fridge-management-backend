@@ -1,0 +1,31 @@
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        productId:
+          type: integer
+        productName:
+          type: string
+        quantity:
+          type: number
+        unit:
+          enum:
+            - kg
+            - g
+            - l
+            - ml
+            - pcs
+            - dkg
+            - dl
+        expirationDate:
+          type: string
+          format: date
+        opened_date:
+          type: string
+          format: date
+        shelfId:
+          type: integer
+        barcode:
+          type: string
+      required: [productName, quantity, unit, expirationDate]

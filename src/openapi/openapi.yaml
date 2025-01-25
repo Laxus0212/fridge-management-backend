@@ -1,0 +1,118 @@
+openapi: 3.0.0
+info:
+  title: Fridge Management API
+  version: 1.0.0
+  description: API for managing users, fridges, shelves, items, shopping lists, recipes, ingredients, and messages.
+servers:
+  - url: http://localhost:4010
+    description: 'API server'
+
+paths:
+  /users:
+    $ref: './swagger/services/user-service.yaml#/paths/~1users'
+  /users/login:
+    $ref: './swagger/services/user-service.yaml#/paths/~1users~1login'
+  /users/{userId}:
+    $ref: './swagger/services/user-service.yaml#/paths/~1users~1{userId}'
+  /users/{userId}/fridges:
+    $ref: './swagger/services/user-service.yaml#/paths/~1users~1{userId}~1fridges'
+
+  /fridges:
+    $ref: './swagger/services/fridge-service.yaml#/paths/~1fridges'
+  /fridges/{fridgeId}:
+    $ref: './swagger/services/fridge-service.yaml#/paths/~1fridges~1{fridgeId}'
+
+  /shelves:
+    $ref: './swagger/services/shelf-service.yaml#/paths/~1shelves'
+  /shelves/{shelfId}:
+    $ref: './swagger/services/shelf-service.yaml#/paths/~1shelves~1{shelfId}'
+  /fridges/{fridgeId}/shelves:
+    $ref: './swagger/services/shelf-service.yaml#/paths/~1fridges~1{fridgeId}~1shelves'
+
+  /products:
+    $ref: './swagger/services/product-service.yaml#/paths/~1products'
+  /products/{productId}:
+    $ref: './swagger/services/product-service.yaml#/paths/~1products~1{productId}'
+  /shelves/{shelfId}/products:
+    $ref: './swagger/services/product-service.yaml#/paths/~1shelves~1{shelfId}~1products'
+
+  /shopping-lists:
+    $ref: './swagger/services/shopping-list-service.yaml#/paths/~1shopping-lists'
+  /shopping-lists/{listId}:
+    $ref: './swagger/services/shopping-list-service.yaml#/paths/~1shopping-lists~1{listId}'
+  /shopping-lists/{listId}/items:
+    $ref: './swagger/services/shopping-list-service.yaml#/paths/~1shopping-lists~1{listId}~1items'
+  /shopping-lists/{listId}/items/{itemId}:
+    $ref: './swagger/services/shopping-list-service.yaml#/paths/~1shopping-lists~1{listId}~1items~1{itemId}'
+  /shopping-lists/{familyId}/family-shopping-lists:
+    $ref: './swagger/services/shopping-list-service.yaml#/paths/~1shopping-lists~1{familyId}~1family-shopping-lists'
+
+  /recipes:
+    $ref: './swagger/services/recipe-service.yaml#/paths/~1recipes'
+  /recipes/{recipeId}/ingredients:
+    $ref: './swagger/services/recipe-service.yaml#/paths/~1recipes~1{recipeId}~1ingredients'
+
+  /messages:
+    $ref: './swagger/services/message-service.yaml#/paths/~1messages'
+  /chats/{chatId}/messages:
+    $ref: './swagger/services/message-service.yaml#/paths/~1chats~1{chatId}~1messages'
+  /messages/{messageId}:
+    $ref: './swagger/services/message-service.yaml#/paths/~1messages~1{messageId}'
+
+  /families:
+    $ref: './swagger/services/family-service.yaml#/paths/~1families'
+  /families/{familyId}:
+    $ref: './swagger/services/family-service.yaml#/paths/~1families~1{familyId}'
+  /families/{familyId}/users:
+    $ref: './swagger/services/family-service.yaml#/paths/~1families~1{familyId}~1users'
+  /families/{familyId}/invite:
+    $ref: './swagger/services/family-service.yaml#/paths/~1families~1{familyId}~1invite'
+  /families/invites:
+    $ref: './swagger/services/family-service.yaml#/paths/~1families~1invites'
+  /families/invites/{inviteId}/accept:
+    $ref: './swagger/services/family-service.yaml#/paths/~1families~1invites~1{inviteId}~1accept'
+  /families/invites/{inviteId}/decline:
+    $ref: './swagger/services/family-service.yaml#/paths/~1families~1invites~1{inviteId}~1decline'
+
+
+
+components:
+  schemas:
+    User:
+      $ref: './swagger/interfaces/user.yaml#/components/schemas/User'
+    LoginUserReq:
+      $ref: './swagger/interfaces/user.yaml#/components/schemas/LoginUserReq'
+    LoginUserResp:
+      $ref: './swagger/interfaces/user.yaml#/components/schemas/LoginUserResp'
+    GetUserResp:
+      $ref: './swagger/interfaces/user.yaml#/components/schemas/GetUserResp'
+    FamilyMember:
+      $ref: './swagger/interfaces/user.yaml#/components/schemas/FamilyMember'
+    Fridge:
+      $ref: './swagger/interfaces/fridge.yaml#/components/schemas/Fridge'
+    UpdateFridgeNameRequest:
+      $ref: './swagger/interfaces/fridge.yaml#/components/schemas/UpdateFridgeNameRequest'
+    Shelf:
+      $ref: './swagger/interfaces/shelf.yaml#/components/schemas/Shelf'
+    UpdateShelfNameRequest:
+      $ref: './swagger/interfaces/shelf.yaml#/components/schemas/UpdateShelfNameRequest'
+    Product:
+      $ref: './swagger/interfaces/product.yaml#/components/schemas/Product'
+    ShoppingList:
+      $ref: './swagger/interfaces/shopping-list.yaml#/components/schemas/ShoppingList'
+    ShoppingListItem:
+      $ref: './swagger/interfaces/shopping-list.yaml#/components/schemas/ShoppingListItem'
+    Recipe:
+      $ref: './swagger/interfaces/recipe.yaml#/components/schemas/Recipe'
+    Ingredient:
+      $ref: './swagger/interfaces/recipe.yaml#/components/schemas/Ingredient'
+    Message:
+      $ref: './swagger/interfaces/message.yaml#/components/schemas/Message'
+    Chat:
+      $ref: './swagger/interfaces/chat.yaml#/components/schemas/Chat'
+    Family:
+      $ref: './swagger/interfaces/family.yaml#/components/schemas/Family'
+    Invite:
+      $ref: './swagger/interfaces/family.yaml#/components/schemas/Invite'
+    CreateFamilyReq:
+      $ref: './swagger/interfaces/family.yaml#/components/schemas/CreateFamilyReq'
