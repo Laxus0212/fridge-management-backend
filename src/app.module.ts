@@ -42,9 +42,14 @@ import { ShoppingListItem } from './shopping-lists/models/shopping-list-item.mod
 import { JwtModule } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Invitation } from './families/models/invitation.model';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
       host: 'localhost',
