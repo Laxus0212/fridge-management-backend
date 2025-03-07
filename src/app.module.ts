@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  INestApplication,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -43,13 +48,16 @@ import { JwtModule } from '@nestjs/jwt';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { Invitation } from './families/models/invitation.model';
 import { ConfigModule } from '@nestjs/config';
+import { GoogleStrategy } from './users/strategies/google.strategy';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: './src/users/.env',
     }),
+    PassportModule.register({ defaultStrategy: 'google' }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
       host: 'localhost',
@@ -89,7 +97,7 @@ import { ConfigModule } from '@nestjs/config';
     ]),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'your-secret-key',
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '1d' },
     }),
     UsersModule,
     AuthModule,
@@ -124,6 +132,7 @@ import { ConfigModule } from '@nestjs/config';
     ShelvesService,
     ShoppingListsService,
     UsersService,
+    GoogleStrategy,
   ],
 })
 export class AppModule implements NestModule {
@@ -131,12 +140,19 @@ export class AppModule implements NestModule {
     // middleware
   }
 
-  // CORS engedélyezése
-  static configure(app) {
+  static configure(app: INestApplication) {
     app.enableCors({
-      origin: 'http://localhost:8100', // Engedélyezett url (frontend)
+      origin: ['http://localhost:8100', 'https://accounts.google.com'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-      credentials: true, // Sütiknek
+      credentials: true,
+      allowedHeaders: [
+        'Origin',
+        'X-Requested-With',
+        'Content-Type',
+        'Accept',
+        'Authorization',
+      ],
+      exposedHeaders: ['Authorization'],
     });
   }
 }

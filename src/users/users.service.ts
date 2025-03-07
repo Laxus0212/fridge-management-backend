@@ -1,55 +1,62 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './models/user.model';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { OAuth2Client } from 'google-auth-library';
 
 @Injectable()
 export class UsersService {
+  private googleClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+  );
+
   constructor(
     @InjectModel(User)
     private readonly userModel: typeof User,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    Logger.log('createUserDto', createUserDto);
-
+  async verifyGoogleToken(token: string) {
     try {
-      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
-      createUserDto.password = hashedPassword;
-
-      Logger.log('createUserDto', createUserDto);
-
-      const user = await this.userModel.create({
-        ...createUserDto,
+      const ticket = await this.googleClient.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID,
       });
 
-      return user;
+      return ticket;
     } catch (error) {
-      Logger.error(error);
-      throw new Error(error);
+      throw new Error('Invalid Google token: ' + error.message);
     }
+  }
+
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    return this.userModel.create({
+      ...createUserDto,
+    });
   }
 
   async findAll(): Promise<User[]> {
     return this.userModel.findAll();
   }
 
-  async findOne(id: number): Promise<User> {
-    const user = await this.userModel.findByPk(id);
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
+  async findOne(condition: Record<string, any>): Promise<User> {
+    if (
+      !condition ||
+      typeof condition !== 'object' ||
+      Array.isArray(condition)
+    ) {
+      throw new Error('Invalid condition format. Must be an object.');
     }
-    return user;
-  }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ where: { email } });
+    return await this.userModel
+      .findOne({ where: condition })
+      .then((user) => user);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.findOne(id);
+    const user = await this.findOne({ userId: id });
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
@@ -58,15 +65,25 @@ export class UsersService {
   }
 
   async remove(id: number): Promise<void> {
-    const user = await this.findOne(id);
+    const user = await this.findOne({ userId: id });
     await user.destroy();
   }
 
   async validateUser(email: string, password: string): Promise<User | null> {
-    const user = await this.findByEmail(email);
+    const user = await this.findOne({ email: email });
     if (user && (await bcrypt.compare(password, user.password))) {
       return user;
     }
     return null;
+  }
+
+  async validateOAuthUser(email: string, username: string) {
+    let user = await this.findOne({ email });
+
+    if (!user) {
+      user = await this.create({ email, username, password: '' });
+    }
+
+    return user;
   }
 }

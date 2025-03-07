@@ -1,4 +1,11 @@
-import {Table, Model, Column, ForeignKey, BelongsTo, Sequelize} from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  Column,
+  ForeignKey,
+  BelongsTo,
+  Sequelize,
+} from 'sequelize-typescript';
 import { Family } from '../../families/models/family.model';
 
 @Table
