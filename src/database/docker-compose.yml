@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: my_mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword   # Root felhasználó jelszava
+      MYSQL_USER: varadi                  # Felhasználó neve
+      MYSQL_PASSWORD: password            # Felhasználó jelszava
+      MYSQL_DATABASE: fridge_database     # Adatbázis neve
+    ports:
+      - "3306:3306"                       # MariaDB alapértelmezett portja
+    volumes:
+      - ./db_data:/var/lib/mysql           # Perzisztens adattárolás
+      - ./sql-scripts:/docker-entrypoint-initdb.d # SQL script-ek betöltése induláskor
+
+volumes:
+  mariadbdata:
