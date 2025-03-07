@@ -14,15 +14,15 @@ jobs:
 
       - name: Docker image építése
         run: |
-          docker build -t myoung34/github-runner:${GITHUB_REF#refs/tags/} .
+          docker build -t fridge-management-backend:${GITHUB_REF#refs/tags/} .
         env:
           DOCKER_BUILDKIT: 1
 
       - name: Docker image push
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push myoung34/github-runner:${GITHUB_REF#refs/tags/}
+          docker push fridge-management-backend:${GITHUB_REF#refs/tags/}
 
       - name: Konténer újraindítása a NAS-on
         run: |
-          sshpass -p "${{ secrets.NAS_PASSWORD }}" ssh -o StrictHostKeyChecking=no github-user@varadinas "docker pull myoung34/github-runner:${GITHUB_REF#refs/tags/} && docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.yml up -d"
+          sshpass -p "${{ secrets.NAS_PASSWORD }}" ssh -o StrictHostKeyChecking=no github-user@varadinas "docker pull fridge-management-backend:${GITHUB_REF#refs/tags/} && docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.yml up -d"
