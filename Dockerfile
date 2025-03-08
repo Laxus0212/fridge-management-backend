@@ -6,13 +6,13 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
-RUN npm install --omit=dev
+RUN npm install --include=dev
 
 # Copy the rest of the application files
 COPY . .
 
 # Build the TypeScript code
-RUN npm run build
+RUN ls -lah && npm run build
 
 # Expose the necessary port
 EXPOSE 3000

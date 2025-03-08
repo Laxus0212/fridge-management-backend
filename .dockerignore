@@ -1,7 +1,8 @@
-node_modules
-dist
-test
 .git
-.idea
+node_modules
+action-runners
+_work
+.github
+dist
 Dockerfile
 docker-compose.yml
