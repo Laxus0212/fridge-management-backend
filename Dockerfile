@@ -1,18 +1,21 @@
-# Alap image kiválasztása (Node.js 18 Alpine alapú, hogy kisebb legyen az image mérete)
+# Use the official Node.js 18 Alpine image as the base image
 FROM node:18-alpine
 
-# Munkakönyvtár beállítása a konténerben
+# Set the working directory inside the container
 WORKDIR /app
 
-# Csomagfájlok átmásolása és a függőségek telepítése
+# Copy package files and install dependencies
 COPY package.json package-lock.json ./
 RUN npm install --only=production
 
-# Az alkalmazás fájljainak átmásolása a konténerbe
+# Copy the rest of the application files
 COPY . .
 
-# Exponáljuk a szükséges portot
+# Build the TypeScript code
+RUN npm run build
+
+# Expose the necessary port
 EXPOSE 3000
 
-# Az alkalmazás indítási parancsa
-CMD ["node", "server.js"]
+# Command to run the application
+CMD ["npm", "run", "start:prod"]
