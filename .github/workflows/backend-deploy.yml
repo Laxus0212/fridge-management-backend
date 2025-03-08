@@ -43,7 +43,7 @@ jobs:
             export PATH=\$PATH:/usr/local/bin
             docker --version
             docker-compose --version
-            docker pull laxus0212/fridge-management-backend:${{ env.TAG_NAME }}
+            docker pull laxus0212/fridge-management-backend
             docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.yml up -d
           "
 
