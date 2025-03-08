@@ -31,6 +31,12 @@ jobs:
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin docker.io
           docker push laxus0212/fridge-management-backend:${{ env.TAG_NAME }}
 
-      - name: Konténer újraindítása a NAS-on
-        run: |
-          sshpass -p "${{ secrets.NAS_PASSWORD }}" ssh -o StrictHostKeyChecking=no github-user@varadinas "docker pull laxus0212/fridge-management-backend:${{ env.TAG_NAME }} && docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.yml up -d"
+      - name: Konténer újraindítása a NAS-on SSH kulccsal
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: varadinas
+          username: github-user
+          key: ${{ secrets.NAS_SSH_KEY }}
+          script: |
+            docker pull laxus0212/fridge-management-backend:${{ env.TAG_NAME }}
+            docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.yml up -d
