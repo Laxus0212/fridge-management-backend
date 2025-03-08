@@ -12,9 +12,6 @@ jobs:
       - name: Repository klónozása
         uses: actions/checkout@v3
 
-      - name: Debug GITHUB_REF
-        run: echo "GITHUB_REF is $GITHUB_REF"
-
       - name: Extract tag for Windows
         run: |
           $env:TAG_NAME = "${{ github.ref }}" -replace 'refs/tags/', ''
@@ -23,16 +20,17 @@ jobs:
 
       - name: Docker image építése
         run: |
-          TAG_NAME=$(echo ${GITHUB_REF#refs/tags/})
+          $TAG_NAME = $env:TAG_NAME
           docker build -t Laxus0212/fridge-management-backend:$TAG_NAME .
+        shell: pwsh
         env:
           DOCKER_BUILDKIT: 1
 
       - name: Docker image push
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker push Laxus0212/fridge-management-backend:${GITHUB_REF#refs/tags/}
+          docker push Laxus0212/fridge-management-backend:${{ env.TAG_NAME }}
 
       - name: Konténer újraindítása a NAS-on
         run: |
-          sshpass -p "${{ secrets.NAS_PASSWORD }}" ssh -o StrictHostKeyChecking=no github-user@varadinas "docker pull Laxus0212/fridge-management-backend:${GITHUB_REF#refs/tags/} && docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.yml up -d"
+          sshpass -p "${{ secrets.NAS_PASSWORD }}" ssh -o StrictHostKeyChecking=no github-user@varadinas "docker pull Laxus0212/fridge-management-backend:${{ env.TAG_NAME }} && docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.yml up -d"
