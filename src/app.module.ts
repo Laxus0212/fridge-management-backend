@@ -61,11 +61,11 @@ import * as process from 'node:process';
     PassportModule.register({ defaultStrategy: 'google' }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: process.env.DATABASE_HOST,
-      port: parseInt(process.env.DATABASE_PORT, 10),
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
+      host: process.env.MYSQL_HOST,
+      port: parseInt(process.env.MYSQL_PORT, 10),
+      username: process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_NAME,
       models: [
         Family,
         User,
