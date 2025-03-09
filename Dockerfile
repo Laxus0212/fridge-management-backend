@@ -4,6 +4,9 @@ FROM node:18-alpine
 # Set the working directory inside the container
 WORKDIR /app
 
+# Install MySQL client (IMPORTANT!)
+RUN apk add --no-cache mysql-client
+
 # Copy package files and install dependencies
 COPY package.json package-lock.json ./
 RUN npm install --include=dev
