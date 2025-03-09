@@ -80,7 +80,7 @@ import * as process from 'node:process';
         ShoppingListItem,
       ],
       autoLoadModels: true,
-      synchronize: true,
+      synchronize: false,
     }),
     SequelizeModule.forFeature([
       User,
