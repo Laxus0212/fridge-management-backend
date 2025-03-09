@@ -14,7 +14,13 @@ const db = {};
 let sequelize;
 if (config.use_env_variable) {
   console.log('config.use_env_variable', config.use_env_variable);
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  sequelize = new Sequelize(process.env[config.use_env_variable], {
+    username: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    host: process.env.MYSQL_HOST,
+    dialect: 'mysql',
+  });
 } else {
   console.log('config.database', config.database);
   sequelize = new Sequelize(
