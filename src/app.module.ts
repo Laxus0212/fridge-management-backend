@@ -50,6 +50,7 @@ import { Invitation } from './families/models/invitation.model';
 import { ConfigModule } from '@nestjs/config';
 import { GoogleStrategy } from './users/strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
+import * as process from 'node:process';
 
 @Module({
   imports: [
@@ -60,11 +61,11 @@ import { PassportModule } from '@nestjs/passport';
     PassportModule.register({ defaultStrategy: 'google' }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'varadi',
-      password: 'password',
-      database: 'fridge_database',
+      host: process.env.DATABASE_HOST,
+      port: parseInt(process.env.DATABASE_PORT, 10),
+      username: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
       models: [
         Family,
         User,
