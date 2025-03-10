@@ -65,7 +65,7 @@ import * as process from 'node:process';
       port: parseInt(process.env.MYSQL_PORT, 10),
       username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
-      database: process.env.MYSQL_NAME,
+      database: process.env.MYSQL_DATABASE,
       models: [
         Family,
         User,
