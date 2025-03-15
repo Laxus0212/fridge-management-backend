@@ -33,16 +33,21 @@ jobs:
     if: contains(github.ref, '-DEV')
     steps:
       - name: Konténer újraindítása a NAS-on fejlesztői környezetben
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: varadinas
-          username: github-user
-          key: ${{ secrets.NAS_SSH_KEY }}
-          script: |
+        run: |
+          # SSH könyvtár és kulcs beállítása
+          mkdir -p ~/.ssh
+          echo "${{ secrets.NAS_SSH_KEY }}" | sed 's/\r$//' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Kapcsolódás a NAS-hoz és a konténer frissítése
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa github-user@varadinas "
+            export PATH=\$PATH:/usr/local/bin
+            docker --version
+            docker-compose --version
             docker pull laxus0212/fridge-management-backend:${{ env.TAG_NAME }}
             echo \"IMAGE_VERSION=${{ env.TAG_NAME }}\" > /volume1/docker/fridge-management-backend/.env
             docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.dev.yml up -d
-          
+              "
 
   deploy_backend_prod:
     runs-on: self-hosted
@@ -50,16 +55,21 @@ jobs:
     if: "!contains(github.ref, '-DEV') && !contains(github.ref, '-DATABASE')"
     steps:
       - name: Konténer újraindítása a NAS-on éles környezetben
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: varadinas
-          username: github-user
-          key: ${{ secrets.NAS_SSH_KEY }}
-          script: |
+        run: |
+          # SSH könyvtár és kulcs beállítása
+          mkdir -p ~/.ssh
+          echo "${{ secrets.NAS_SSH_KEY }}" | sed 's/\r$//' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Kapcsolódás a NAS-hoz és a konténer frissítése
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa github-user@varadinas "
+            export PATH=\$PATH:/usr/local/bin
+            docker --version
+            docker-compose --version
             docker pull laxus0212/fridge-management-backend:${{ env.TAG_NAME }}
             echo \"IMAGE_VERSION=${{ env.TAG_NAME }}\" > /volume1/docker/fridge-management-backend/.env
             docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.prod.yml up -d
-          
+          "
 
   build-database:
     runs-on: self-hosted
@@ -84,12 +94,17 @@ jobs:
     if: contains(github.ref, '-DATABASE')
     steps:
       - name: Adatbázis konténer újraindítása a NAS-on és várakozás az elérhetőségre
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: varadinas
-          username: github-user
-          key: ${{ secrets.NAS_SSH_KEY }}
-          script: |
+        run: |
+          # SSH könyvtár és kulcs beállítása
+          mkdir -p ~/.ssh
+          echo "${{ secrets.NAS_SSH_KEY }}" | sed 's/\r$//' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Kapcsolódás a NAS-hoz és a konténer frissítése
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa github-user@varadinas "
+            export PATH=\$PATH:/usr/local/bin
+            docker --version
+            docker-compose --version
             docker pull laxus0212/fridge-management-database:${{ env.TAG_NAME }}
             docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.database.yml up -d
             echo 'Várakozás az adatbázis elérhetőségére...'
@@ -99,3 +114,4 @@ jobs:
             echo 'Az adatbázis elérhető.'
             docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.prod.yml up -d
             docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.dev.yml up -d
+              "
