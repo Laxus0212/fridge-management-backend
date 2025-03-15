@@ -19,6 +19,7 @@ RUN ls -lah && npm run build
 
 # Expose the necessary port
 EXPOSE 3000
+EXPOSE 9229
 
 # Command to run the application
 CMD ["npm", "run", "start:prod"]

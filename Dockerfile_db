@@ -1,0 +1,8 @@
+# MariaDB alap image
+FROM mariadb:latest
+
+# Install MySQL client (IMPORTANT!)
+RUN apk add --no-cache mysql-client
+
+# Expose the necessary port
+EXPOSE 3306
