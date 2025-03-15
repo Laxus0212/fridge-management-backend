@@ -32,6 +32,10 @@ jobs:
     needs: build-backend
     if: contains(github.ref, '-DEV')
     steps:
+      - name: Tag kinyerése
+        id: extract_tag
+        run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
       - name: Konténer újraindítása a NAS-on fejlesztői környezetben
         run: |
           # SSH könyvtár és kulcs beállítása
@@ -54,6 +58,10 @@ jobs:
     needs: build-backend
     if: "!contains(github.ref, '-DEV') && !contains(github.ref, '-DATABASE')"
     steps:
+      - name: Tag kinyerése
+        id: extract_tag
+        run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
       - name: Konténer újraindítása a NAS-on éles környezetben
         run: |
           # SSH könyvtár és kulcs beállítása
@@ -78,6 +86,10 @@ jobs:
       - name: Repository klónozása
         uses: actions/checkout@v3
 
+      - name: Tag kinyerése
+        id: extract_tag
+        run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
       - name: Adatbázis Docker image építése
         run: docker build -t laxus0212/fridge-management-database:${{ env.TAG_NAME }} -f Dockerfile_db .
         env:
@@ -93,6 +105,10 @@ jobs:
     needs: build-database
     if: contains(github.ref, '-DATABASE')
     steps:
+      - name: Tag kinyerése
+        id: extract_tag
+        run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
       - name: Adatbázis konténer újraindítása a NAS-on és várakozás az elérhetőségre
         run: |
           # SSH könyvtár és kulcs beállítása
