@@ -122,12 +122,12 @@ jobs:
             docker --version
             docker-compose --version
             docker pull laxus0212/fridge-management-database:${{ env.TAG_NAME }}
-            docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.database.yml up -d
+            docker-compose -f /volume1/docker/fridge-management-backend/database/docker-compose.database.yml up -d
             echo 'Várakozás az adatbázis elérhetőségére...'
             while [ $(docker inspect --format='{{json .State.Health.Status}}' my_mariadb) != '\"healthy\"' ]; do
               sleep 10
             done
             echo 'Az adatbázis elérhető.'
-            docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.prod.yml up -d
-            docker-compose -f /volume1/docker/fridge-management-backend/docker-compose.dev.yml up -d
+            docker-compose -f /volume1/docker/fridge-management-backend/prod/docker-compose.prod.yml up -d
+            docker-compose -f /volume1/docker/fridge-management-backend/dev/docker-compose.dev.yml up -d
               "

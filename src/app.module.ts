@@ -70,6 +70,7 @@ import * as process from 'node:process';
         Family,
         User,
         Product,
+        Invitation,
         Shelf,
         Fridge,
         Message,
