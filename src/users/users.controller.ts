@@ -50,7 +50,7 @@ export class UsersController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      domain: 'localhost',
+      domain: 'varadinas.synology.me',
     });
 
     return {
@@ -84,7 +84,7 @@ export class UsersController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      domain: 'localhost',
+      domain: 'varadinas.synology.me',
     });
 
     return {
@@ -116,7 +116,7 @@ export class UsersController {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        domain: 'localhost',
+        domain: 'varadinas.synology.me',
       });
 
       return {
@@ -196,7 +196,7 @@ export class UsersController {
       httpOnly: true,
       secure: false,
       sameSite: 'lax',
-      domain: 'localhost',
+      domain: 'varadinas.synology.me',
     });
 
     return { message: 'User logged in successfully' };
