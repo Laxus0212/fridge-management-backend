@@ -8,7 +8,6 @@ on:
 jobs:
   build-backend:
     runs-on: self-hosted
-    if: "!contains(github.ref, '-DATABASE')"  # Csak akkor fut, ha a címke nem tartalmazza a '-DATABASE' szót
     steps:
       - name: Repository klónozása
         uses: actions/checkout@v3
@@ -56,7 +55,7 @@ jobs:
   deploy_backend_prod:
     runs-on: self-hosted
     needs: build-backend
-    if: "!contains(github.ref, '-DEV') && !contains(github.ref, '-DATABASE')"
+    if: "!contains(github.ref, '-DEV')"
     steps:
       - name: Tag kinyerése
         id: extract_tag
@@ -78,56 +77,3 @@ jobs:
             echo \"IMAGE_VERSION=${{ env.TAG_NAME }}\" > /volume1/docker/fridge-management-backend/.env
             docker-compose -f /volume1/docker/fridge-management-backend/prod/docker-compose.prod.yml up -d
           "
-
-  build-database:
-    runs-on: self-hosted
-    if: contains(github.ref, '-DATABASE')
-    steps:
-      - name: Repository klónozása
-        uses: actions/checkout@v3
-
-      - name: Tag kinyerése
-        id: extract_tag
-        run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
-      - name: Adatbázis Docker image építése
-        run: docker build -t laxus0212/fridge-management-database:${{ env.TAG_NAME }} -f Dockerfile_db .
-        env:
-          DOCKER_BUILDKIT: 1
-
-      - name: Adatbázis Docker image push
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin docker.io
-          docker push laxus0212/fridge-management-database:${{ env.TAG_NAME }}
-
-  deploy_database:
-    runs-on: self-hosted
-    needs: build-database
-    if: contains(github.ref, '-DATABASE')
-    steps:
-      - name: Tag kinyerése
-        id: extract_tag
-        run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
-      - name: Adatbázis konténer újraindítása a NAS-on és várakozás az elérhetőségre
-        run: |
-          # SSH könyvtár és kulcs beállítása
-          mkdir -p ~/.ssh
-          echo "${{ secrets.NAS_SSH_KEY }}" | sed 's/\r$//' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          
-          # Kapcsolódás a NAS-hoz és a konténer frissítése
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa github-user@varadinas "
-            export PATH=\$PATH:/usr/local/bin
-            docker --version
-            docker-compose --version
-            docker pull laxus0212/fridge-management-database:${{ env.TAG_NAME }}
-            docker-compose -f /volume1/docker/fridge-management-backend/database/docker-compose.database.yml up -d
-            echo 'Várakozás az adatbázis elérhetőségére...'
-            while [ $(docker inspect --format='{{json .State.Health.Status}}' my_mariadb) != '\"healthy\"' ]; do
-              sleep 10
-            done
-            echo 'Az adatbázis elérhető.'
-            docker-compose -f /volume1/docker/fridge-management-backend/prod/docker-compose.prod.yml up -d
-            docker-compose -f /volume1/docker/fridge-management-backend/dev/docker-compose.dev.yml up -d
-              "
