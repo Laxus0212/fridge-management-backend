@@ -48,8 +48,8 @@ export class UsersController {
   async logout(@Res({ passthrough: true }) response: Response) {
     response.clearCookie('jwt', {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       domain: 'varadinas.synology.me',
     });
 
@@ -82,8 +82,8 @@ export class UsersController {
 
     response.cookie('jwt', jwt, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       domain: 'varadinas.synology.me',
     });
 
@@ -114,8 +114,8 @@ export class UsersController {
 
       res.cookie('jwt', jwt, {
         httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'none',
         domain: 'varadinas.synology.me',
       });
 
@@ -194,8 +194,8 @@ export class UsersController {
 
     res.cookie('jwt', jwt, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       domain: 'varadinas.synology.me',
     });
 
