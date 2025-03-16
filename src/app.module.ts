@@ -144,7 +144,7 @@ export class AppModule implements NestModule {
 
   static configure(app: INestApplication) {
     app.enableCors({
-      origin: ['http://localhost:8100', 'https://accounts.google.com'],
+      origin: ['http://localhost:8100', 'https://accounts.google.com', '*'],
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
       credentials: true,
       allowedHeaders: [
