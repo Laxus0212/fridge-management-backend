@@ -148,6 +148,7 @@ export class AppModule implements NestModule {
         'http://localhost:8100',
         'https://accounts.google.com',
         'http://localhost',
+        'https://localhost',
         'capacitor://localhost',
         'https://varadinas.synology.me',
         'http://varadinas.synology.me',
