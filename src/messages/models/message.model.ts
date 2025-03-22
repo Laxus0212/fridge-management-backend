@@ -15,7 +15,13 @@ export class Message extends Model {
   senderId: number;
 
   @Column
+  username: string;
+
+  @Column
   message: string;
+
+  @Column
+  familyId: number;
 
   @Column({ defaultValue: DataTypes.NOW })
   sentAt: Date;

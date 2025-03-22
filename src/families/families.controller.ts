@@ -1,26 +1,39 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Put,
-  Delete,
-  NotFoundException,
   BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
 import { FamiliesService } from './families.service';
 import { CreateFamilyDto } from './dto/create-family.dto';
 import { UpdateFamilyDto } from './dto/update-family.dto';
 import { InviteUserDto } from './dto/invite-user.dto';
+import { MessagesService } from '../messages/messages.service';
 
 @Controller('families')
 export class FamiliesController {
-  constructor(private readonly familiesService: FamiliesService) {}
+  constructor(
+    private readonly familiesService: FamiliesService,
+    private readonly messagesService: MessagesService,
+  ) {}
 
   @Post()
-  create(@Body() createFamilyDto: CreateFamilyDto) {
-    return this.familiesService.create(createFamilyDto);
+  async create(@Body() createFamilyDto: CreateFamilyDto) {
+    const family = await this.familiesService.create(createFamilyDto).then(
+      async (family) => {
+        await this.messagesService.createChat({ familyId: family.familyId });
+        return family;
+      },
+      (error) => {
+        throw new BadRequestException(error.message);
+      },
+    );
+    return family;
   }
 
   @Get()
@@ -35,6 +48,15 @@ export class FamiliesController {
       throw new NotFoundException(`Family with ID ${id} not found`);
     }
     return family;
+  }
+
+  @Get(':id/chat')
+  async findChatByFamilyId(@Param('id') id: string) {
+    const family = await this.familiesService.findOne(+id);
+    if (!family) {
+      throw new NotFoundException(`Family with ID ${id} not found`);
+    }
+    return this.messagesService.findChatByFamilyId(+id);
   }
 
   @Put(':id')

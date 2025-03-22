@@ -27,11 +27,11 @@ export class MessagesController {
     return this.messagesService.create(createMessageDto);
   }
 
-  @Get('chats/:chatId/messages')
+  @Get('chats/:familyId/messages')
   async findAllByChatId(
-    @Param('chatId') chatId: number,
+    @Param('familyId') familyId: number,
   ): Promise<MessageResponseDto[]> {
-    return this.messagesService.findAllByChatId(chatId);
+    return this.messagesService.findAllByChatId(familyId);
   }
 
   @Get(':messageId')
