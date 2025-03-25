@@ -50,13 +50,13 @@ export class FamiliesController {
     return family;
   }
 
-  @Get(':id/chat')
-  async findChatByFamilyId(@Param('id') id: string) {
-    const family = await this.familiesService.findOne(+id);
+  @Get(':familyId/chat')
+  async findChatByFamilyId(@Param('familyId') familyId: string) {
+    const family = await this.familiesService.findOne(+familyId);
     if (!family) {
-      throw new NotFoundException(`Family with ID ${id} not found`);
+      throw new NotFoundException(`Family with ID ${familyId} not found`);
     }
-    return this.messagesService.findChatByFamilyId(+id);
+    return this.messagesService.findChatByFamilyId(+familyId);
   }
 
   @Put(':id')
