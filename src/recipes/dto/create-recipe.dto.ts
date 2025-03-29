@@ -1,6 +1,9 @@
 export class CreateRecipeDto {
-  recipeName: string;
-  mealType: 'reggeli' | 'ebéd' | 'vacsora';
+  title: string;
+  ingredients: string[];
+  instructions: string;
+  description: string;
   saved_by: number;
-  sharedWithFamily?: boolean;
+  familyId?: number;
+  mealType?: 'reggeli' | 'ebéd' | 'vacsora';
 }
