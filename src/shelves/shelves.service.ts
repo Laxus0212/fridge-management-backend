@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Shelf } from './models/shelf.model';
 import { CreateShelfDto } from './dto/create-shelf.dto';
 import { UpdateShelfDto } from './dto/update-shelf.dto';
+import { Product } from '../products/models/product.model';
 
 @Injectable()
 export class ShelvesService {
@@ -42,6 +43,6 @@ export class ShelvesService {
   }
 
   async getShelvesByFridgeId(fridgeId: number): Promise<Shelf[]> {
-    return this.shelfModel.findAll({ where: { fridgeId } });
+    return this.shelfModel.findAll({ where: { fridgeId }, include: [Product] });
   }
 }

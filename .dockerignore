@@ -7,4 +7,4 @@ dist
 Dockerfile
 docker-compose.prod.yml
 docker-compose.dev.yml
-docker-compose.database.yml
+docker-compose.local.yml

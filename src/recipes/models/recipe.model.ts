@@ -19,13 +19,13 @@ export class Recipe extends Model {
   description: string;
 
   @Column
-  saved_by: number;
+  savedBy: number;
 
   @Column({ allowNull: true })
   familyId: number;
 
   @Column({
-    type: DataTypes.ENUM('reggeli', 'ebéd', 'vacsora'),
+    type: DataTypes.ENUM('breakfast', 'lunch', 'dinner'),
     allowNull: true,
   })
   mealType: string;

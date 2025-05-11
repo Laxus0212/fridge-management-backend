@@ -1,12 +1,12 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {InjectModel} from '@nestjs/sequelize';
-import {Message} from './models/message.model';
-import {CreateMessageDto} from './dto/create-message.dto';
-import {UpdateMessageDto} from './dto/update-message.dto';
-import {MessageResponseDto} from './dto/message-response.dto';
-import {CreateChatDto} from './dto/create-chat.dto';
-import {ChatResponseDto} from './dto/chat-response.dto';
-import {Chat} from './models/chat.model';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/sequelize';
+import { Message } from './models/message.model';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateMessageDto } from './dto/update-message.dto';
+import { MessageResponseDto } from './dto/message-response.dto';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { ChatResponseDto } from './dto/chat-response.dto';
+import { Chat } from './models/chat.model';
 
 @Injectable()
 export class MessagesService {

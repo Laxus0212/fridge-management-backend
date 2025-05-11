@@ -11,6 +11,9 @@ import { User } from '../users/models/user.model';
 import { InviteUserDto } from './dto/invite-user.dto';
 import { Invitation } from './models/invitation.model';
 import { Sequelize } from 'sequelize-typescript';
+import { Fridge } from '../fridges/models/fridge.model';
+import { ShoppingList } from '../shopping-lists/models/shopping-list.model';
+import { Recipe } from '../recipes/models/recipe.model';
 
 @Injectable()
 export class FamiliesService {
@@ -19,6 +22,12 @@ export class FamiliesService {
     private readonly familyModel: typeof Family,
     @InjectModel(User)
     private readonly userModel: typeof User,
+    @InjectModel(Fridge)
+    private readonly fridgeModel: typeof Fridge,
+    @InjectModel(ShoppingList)
+    private readonly shoppingListModel: typeof ShoppingList,
+    @InjectModel(Recipe)
+    private readonly recipeModel: typeof Recipe,
     @InjectModel(Invitation)
     private readonly invitationModel: typeof Invitation,
     private readonly sequelize: Sequelize,
@@ -152,19 +161,37 @@ export class FamiliesService {
       // Check how many users are in the family
       const members = family.members;
       if (members.length === 1 && members[0].userId === userId) {
-        // delete the family and all invitations if the user is the only member
+        // Delete the family and all invitations if the user is the only member
         await this.invitationModel.destroy({
           where: { familyId },
           transaction,
         });
         await family.destroy({ transaction });
       } else {
-        // set the user's familyId to null if they are not the only member
+        // Set the user's familyId to null if they are not the only member
         await this.userModel.update(
           { familyId: null },
           { where: { userId }, transaction },
         );
       }
+
+      // Remove familyId from fridges where the user is the owner
+      await this.fridgeModel.update(
+        { familyId: null },
+        { where: { ownerId: userId, familyId }, transaction },
+      );
+
+      // Remove familyId from shopping lists where the user is the owner
+      await this.shoppingListModel.update(
+        { familyId: null },
+        { where: { ownerId: userId, familyId }, transaction },
+      );
+
+      // Remove familyId from recipes where the user is the owner
+      await this.recipeModel.update(
+        { familyId: null },
+        { where: { savedBy: userId, familyId }, transaction },
+      );
 
       await transaction.commit();
     } catch (error) {

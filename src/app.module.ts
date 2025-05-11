@@ -56,7 +56,7 @@ import * as process from 'node:process';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: './src/users/.env',
+      envFilePath: [`src/users/.env.${process.env.NODE_ENV}`],
     }),
     PassportModule.register({ defaultStrategy: 'google' }),
     SequelizeModule.forRoot({

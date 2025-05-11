@@ -3,7 +3,7 @@ export class CreateRecipeDto {
   ingredients: string[];
   instructions: string;
   description: string;
-  saved_by: number;
+  savedBy: number;
   familyId?: number;
   mealType?: 'reggeli' | 'ebéd' | 'vacsora';
 }

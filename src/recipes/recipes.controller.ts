@@ -5,10 +5,11 @@ import {
   Body,
   Param,
   HttpCode,
-  HttpStatus,
+  HttpStatus, Put, Delete, Query,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
+import { UpdateRecipeDto } from './dto/update-recipe.dto';
 
 @Controller('recipes')
 export class RecipesController {
@@ -33,5 +34,19 @@ export class RecipesController {
     @Param('userId') userId: number,
   ) {
     return this.recipesService.getFamilySharedRecipes(familyId, userId);
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: number, @Body() updateDto: UpdateRecipeDto) {
+    return this.recipesService.update(id, updateDto);
+  }
+
+  @Delete(':userId/favorites')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  removeFromFavorites(
+    @Param('userId') userId: number,
+    @Query('recipeId') recipeId: number,
+  ) {
+    return this.recipesService.remove(+recipeId);
   }
 }
