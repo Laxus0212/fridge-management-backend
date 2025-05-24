@@ -40,7 +40,6 @@ import { Shelf } from './shelves/models/shelf.model';
 import { Fridge } from './fridges/models/fridge.model';
 import { Chat } from './messages/models/chat.model';
 import { Recipe } from './recipes/models/recipe.model';
-import { Ingredient } from './recipes/models/ingredient.model';
 import { Message } from './messages/models/message.model';
 import { ShoppingList } from './shopping-lists/models/shopping-list.model';
 import { ShoppingListItem } from './shopping-lists/models/shopping-list-item.model';
@@ -76,12 +75,11 @@ import * as process from 'node:process';
         Message,
         Chat,
         Recipe,
-        Ingredient,
         ShoppingList,
         ShoppingListItem,
       ],
       autoLoadModels: true,
-      synchronize: false,
+      synchronize: true,
     }),
     SequelizeModule.forFeature([
       User,
@@ -92,7 +90,6 @@ import * as process from 'node:process';
       Fridge,
       Chat,
       Recipe,
-      Ingredient,
       Message,
       ShoppingList,
       ShoppingListItem,

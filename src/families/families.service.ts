@@ -14,6 +14,8 @@ import { Sequelize } from 'sequelize-typescript';
 import { Fridge } from '../fridges/models/fridge.model';
 import { ShoppingList } from '../shopping-lists/models/shopping-list.model';
 import { Recipe } from '../recipes/models/recipe.model';
+import {Chat} from "../messages/models/chat.model";
+import {Message} from "../messages/models/message.model";
 
 @Injectable()
 export class FamiliesService {
@@ -30,6 +32,10 @@ export class FamiliesService {
     private readonly recipeModel: typeof Recipe,
     @InjectModel(Invitation)
     private readonly invitationModel: typeof Invitation,
+    @InjectModel(Chat)
+    private readonly chatModel: typeof Chat,
+    @InjectModel(Message)
+    private readonly messageModel: typeof Message,
     private readonly sequelize: Sequelize,
   ) {}
 
@@ -166,6 +172,18 @@ export class FamiliesService {
           where: { familyId },
           transaction,
         });
+        // Delete the chat and its messages associated with the family
+        const chat = await this.chatModel.findOne({
+          where: { familyId },
+          transaction,
+        });
+        if (chat) {
+          await this.messageModel.destroy({
+            where: { chatId: chat.chatId },
+            transaction,
+          });
+          await chat.destroy({ transaction });
+        }
         await family.destroy({ transaction });
       } else {
         // Set the user's familyId to null if they are not the only member

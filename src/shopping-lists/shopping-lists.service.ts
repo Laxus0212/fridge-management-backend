@@ -5,6 +5,8 @@ import { ShoppingListItem } from './models/shopping-list-item.model';
 import { CreateShoppingListDto } from './dto/create-shopping-list.dto';
 import { UpdateShoppingListDto } from './dto/update-shopping-list.dto';
 import { ShoppingListItemDto } from './dto/shopping-list-item.dto';
+import { Op } from 'sequelize';
+import { User } from '../users/models/user.model';
 
 @Injectable()
 export class ShoppingListsService {
@@ -13,6 +15,8 @@ export class ShoppingListsService {
     private readonly shoppingListModel: typeof ShoppingList,
     @InjectModel(ShoppingListItem)
     private readonly shoppingListItemModel: typeof ShoppingListItem,
+    @InjectModel(User)
+    private readonly userModel: typeof User,
   ) {}
 
   async create(
@@ -43,9 +47,25 @@ export class ShoppingListsService {
     updateShoppingListDto: UpdateShoppingListDto,
   ): Promise<ShoppingList> {
     const shoppingList = await this.findOne(listId);
+
+    const user = await this.userModel.findOne({
+      where: { userId: shoppingList.ownerId },
+    });
+
+    if (
+      !user ||
+      (shoppingList.ownerId !== user.userId &&
+        shoppingList.familyId !== user.familyId)
+    ) {
+      throw new NotFoundException(
+        `You do not have permission to update this shopping list`,
+      );
+    }
+
     if (!updateShoppingListDto.familyId) {
       updateShoppingListDto.familyId = null;
     }
+
     await shoppingList.update(updateShoppingListDto);
     return shoppingList;
   }
@@ -60,6 +80,21 @@ export class ShoppingListsService {
     itemDto: ShoppingListItemDto,
   ): Promise<ShoppingListItem> {
     const shoppingList = await this.findOne(listId);
+
+    const user = await this.userModel.findOne({
+      where: { userId: shoppingList.ownerId },
+    });
+
+    if (
+      !user ||
+      (shoppingList.ownerId !== user.userId &&
+        shoppingList.familyId !== user.familyId)
+    ) {
+      throw new NotFoundException(
+        `You do not have permission to add items to this list`,
+      );
+    }
+
     const item = await this.shoppingListItemModel.create({
       ...itemDto,
       shoppingListId: shoppingList.listId,
@@ -72,14 +107,34 @@ export class ShoppingListsService {
     itemId: number,
     itemDto: ShoppingListItemDto,
   ): Promise<ShoppingListItem> {
+    const shoppingList = await this.shoppingListModel.findByPk(listId);
+
+    if (!shoppingList) {
+      throw new NotFoundException(`Shopping list with ID ${listId} not found`);
+    }
+
+    const user = await this.userModel.findOne({ where: { userId: shoppingList.ownerId } });
+
+    if (
+      !user ||
+      (shoppingList.ownerId !== user.userId &&
+        shoppingList.familyId !== user.familyId)
+    ) {
+      throw new NotFoundException(
+        `You do not have permission to update this item`,
+      );
+    }
+
     const item = await this.shoppingListItemModel.findOne({
       where: { itemId, shoppingListId: listId },
     });
+
     if (!item) {
       throw new NotFoundException(
         `Item with ID ${itemId} not found in list ${listId}`,
       );
     }
+
     await item.update(itemDto);
     return item;
   }
@@ -97,8 +152,19 @@ export class ShoppingListsService {
   }
 
   async getListsByUserId(ownerId: number): Promise<ShoppingList[]> {
+    // Fetch the user to get the familyId
+    const user = await this.userModel.findOne({ where: { userId: ownerId } });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID ${ownerId} not found`);
+    }
+
+    const familyId = user.familyId;
+
     return this.shoppingListModel.findAll({
-      where: { ownerId },
+      where: {
+        [Op.or]: [{ ownerId }, familyId ? { familyId } : null].filter(Boolean),
+      },
       include: [ShoppingListItem],
     });
   }
