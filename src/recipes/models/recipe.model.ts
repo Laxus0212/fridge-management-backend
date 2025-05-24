@@ -1,5 +1,13 @@
-import { Table, Model, Column } from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  Column,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { DataTypes } from 'sequelize';
+import { User } from '../../users/models/user.model';
+import { Family } from '../../families/models/family.model';
 
 @Table
 export class Recipe extends Model {
@@ -18,15 +26,22 @@ export class Recipe extends Model {
   @Column({ type: DataTypes.TEXT })
   description: string;
 
+  @Column({
+    type: DataTypes.ENUM('breakfast', 'lunch', 'dinner'),
+  })
+  mealType: string;
+
+  @ForeignKey(() => User)
   @Column
   savedBy: number;
 
+  @BelongsTo(() => User)
+  user: User;
+
+  @ForeignKey(() => Family)
   @Column({ allowNull: true })
   familyId: number;
 
-  @Column({
-    type: DataTypes.ENUM('breakfast', 'lunch', 'dinner'),
-    allowNull: true,
-  })
-  mealType: string;
+  @BelongsTo(() => Family)
+  family: Family;
 }

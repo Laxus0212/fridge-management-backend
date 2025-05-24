@@ -7,6 +7,7 @@ import {
 } from 'sequelize-typescript';
 import { ShoppingList } from './shopping-list.model';
 import { DataTypes } from 'sequelize';
+import { Unit } from '../../products/dto/unit';
 
 @Table
 export class ShoppingListItem extends Model {
@@ -19,7 +20,7 @@ export class ShoppingListItem extends Model {
   @Column({ type: DataTypes.DECIMAL(10, 2) })
   quantity: number;
 
-  @Column({ type: DataTypes.ENUM('g', 'kg', 'ml', 'l', 'pcs', 'dkg', 'dl') })
+  @Column({ type: DataTypes.ENUM(...Object.values(Unit)) })
   unit: string;
 
   @ForeignKey(() => ShoppingList)

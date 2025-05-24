@@ -1,6 +1,13 @@
-import { Table, Model, Column, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import {
+  Table,
+  Model,
+  Column,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 import { Shelf } from '../../shelves/models/shelf.model';
 import { DataTypes } from 'sequelize';
+import { Unit } from '../dto/unit';
 
 @Table
 export class Product extends Model {
@@ -13,14 +20,14 @@ export class Product extends Model {
   @Column
   quantity: number;
 
-  @Column({ type: DataTypes.ENUM('kg', 'g', 'l', 'ml', 'pcs', 'dkg', 'dl') })
+  @Column({ type: DataTypes.ENUM(...Object.values(Unit)) })
   unit: string;
 
   @Column({ type: DataTypes.DATEONLY })
   expirationDate: string;
 
   @Column({ type: DataTypes.DATEONLY, allowNull: true })
-  opened_date: string;
+  openedDate: string;
 
   @ForeignKey(() => Shelf)
   @Column

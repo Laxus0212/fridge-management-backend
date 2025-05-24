@@ -5,8 +5,13 @@ import {
   ForeignKey,
   BelongsTo,
   Sequelize,
+  HasMany,
 } from 'sequelize-typescript';
 import { Family } from '../../families/models/family.model';
+import { Fridge } from '../../fridges/models/fridge.model';
+import { Recipe } from '../../recipes/models/recipe.model';
+import { ShoppingList } from '../../shopping-lists/models/shopping-list.model';
+import { Message } from '../../messages/models/message.model';
 
 @Table
 export class User extends Model {
@@ -29,9 +34,15 @@ export class User extends Model {
   @BelongsTo(() => Family)
   family: Family;
 
-  @Column({ defaultValue: Sequelize.literal('CURRENT_TIMESTAMP') })
-  createdAt: Date;
+  @HasMany(() => Fridge)
+  fridges: Fridge[];
 
-  @Column({ defaultValue: Sequelize.literal('CURRENT_TIMESTAMP') })
-  updatedAt: Date;
+  @HasMany(() => Recipe)
+  recipes: Recipe[];
+
+  @HasMany(() => ShoppingList)
+  shoppingLists: ShoppingList[];
+
+  @HasMany(() => Message)
+  messages: Message[];
 }
