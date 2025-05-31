@@ -34,12 +34,16 @@ $ npm install
 
 ## Compile and run the project
 
+### Start the database in local docker container if needed
+
 ```bash
 # navigate to the database folder
 cd src/database
 
 # create the database with docker
 docker compose up
+
+# if you want to connect the backend to the local databse, you have to change the 'sameSite' and 'domain' settings in users controller. sameSite: 'lax', domain: 'localhost'
 ```
 
 ```bash
