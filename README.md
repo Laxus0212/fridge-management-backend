@@ -68,9 +68,4 @@ $ npm run test:cov
 
 ## Deployment
 
-TODO: implement deployment to NAS server with docker containerization
-
-
-npm install sequelize sequelize-typescript @nestjs/sequelize mysql2
-npm install --save-dev sequelize-cli
-npx sequelize-cli init
+add tag to the commit (x.x.x-DEV / x.x.x-PROD) and the runner will automatically deploy the backend to the server
